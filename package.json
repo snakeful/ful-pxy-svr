@@ -1,0 +1,32 @@
+{
+  "name": "ful-pxy-svr",
+  "version": "1.2.0",
+  "description": "Ful Proxy Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snakeful/ful-pxy-svr.git"
+  },
+  "keywords": [
+    "ful",
+    "proxy",
+    "server"
+  ],
+  "author": "Carlos Ful <fulblind@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/snakeful/ful-pxy-svr/issues"
+  },
+  "homepage": "https://github.com/snakeful/ful-pxy-svr#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "compression": "^1.7.0",
+    "cors": "^2.8.4",
+    "express": "^4.15.3",
+    "helmet": "^3.8.0",
+    "http-proxy": "^1.16.2"
+  }
+}
