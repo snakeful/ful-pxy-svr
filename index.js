@@ -17,10 +17,13 @@ app.configDir = 'config';
 app.adbFile = 'sockets-adb.json';
 
 let useDefaultList = false;
+let unregisterOnError = false;
 let proxyPort;
 let socketList;
-function runServer (port, useDefScktList = false) {
+function runServer (port, useDefScktList = false, unregOnError = false) {
   readSockets();
+  useDefaultList = useDefScktList;
+  unregisterOnError = unregOnError;
   proxyPort = parseInt(port || process.env.PORT || 80);
   app.proxyPort = proxyPort;
   if (!app.discoveryPort) {
@@ -166,6 +169,9 @@ const server = http.createServer((req, res) => {
       proxyTarget();
     }, (err) => {
       sendError(res, `Cannot check health for service on ${target.host}:${target.port}. Error: ${err.message}`);
+      if (unregisterOnError) {
+        sockets.sockets.splice(sockets.sockets.indexOf(target), 1);
+      }
     });
   } catch (ex) {
     sendError(res, ex.message);
