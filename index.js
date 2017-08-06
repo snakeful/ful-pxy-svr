@@ -35,7 +35,7 @@ function runServer (port, useDefScktList = false) {
 };
 
 function getConfigDir () {
-  return path.join([app.dirname, app.configDir]);
+  return path.join(app.dirname, app.configDir);
 };
 
 function getConfigFile () {
