@@ -3,6 +3,7 @@ const http = require('http');
 const proxyServer = require('http-proxy');
 const fs = require('fs');
 const express = require('express');
+const path = require('path');
 const app = express();
 const appRouter = express.Router();
 const ifaces = require('os').networkInterfaces();
@@ -34,11 +35,11 @@ function runServer (port, useDefScktList = false) {
 };
 
 function getConfigDir () {
-  return `${app.dirname}/${app.configDir}`;
+  return path.join([app.dirname, app.configDir]);
 };
 
 function getConfigFile () {
-  return `${app.dirname}/${app.configDir}/${app.adbFile}`;
+  return path.join(app.dirname, app.configDir, app.adbFile);
 };
 
 function readSockets () {
