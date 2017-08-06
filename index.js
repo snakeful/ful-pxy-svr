@@ -139,8 +139,15 @@ const server = http.createServer((req, res) => {
       }));
       return res.end();
     }
-    sockets.curr = (sockets.curr + 1) % sockets.sockets.length;
+    sockets.curr = (sockets.curr + 1) % sockets.sockets.length || 0;
     let target = sockets.sockets[sockets.curr];
+    if (!target) {
+      res.writeHeader(400);
+      res.write(JSON.stringify({
+        error: `No sockets registered. Id ${req.headers['x-socket-id'] || 'default'}`
+      }));
+      return res.end();
+    }
     let address = req.socket.remoteAddress.split(':');
     function proxyTarget () {
       proxy.web(req, res, {
