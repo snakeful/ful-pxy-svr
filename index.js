@@ -171,6 +171,7 @@ const server = http.createServer((req, res) => {
       sendError(res, `Cannot check health for service on ${target.host}:${target.port}. Error: ${err.message}`);
       if (unregisterOnError) {
         sockets.sockets.splice(sockets.sockets.indexOf(target), 1);
+        writeSockets();
       }
     });
   } catch (ex) {
