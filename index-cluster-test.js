@@ -27,5 +27,9 @@ if (cluster.isMaster) {
   process.on('message', function (msg) {
     msg.cmd && msg.cmd === 'read-sockets' && server.readSockets();
   });
+  server.use(function (req, res, next) {
+    console.log(`I\'m a middleware function from worker ${process.pid}`);
+    next();
+  });
   server.run(port, true);
 }

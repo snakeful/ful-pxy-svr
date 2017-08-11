@@ -40,6 +40,7 @@
   };
 
   let proxy = proxyServer.createProxyServer({});
+  let bindAppLvlFn = [];
   const server = http.createServer(function (req, res) {
     try {
       if (['OPTIONS', 'HEAD'].indexOf(req.method) !== -1) {
@@ -81,13 +82,18 @@
         });
       }
       console.log(`${address[address.length - 1]}:${req.socket.remotePort} fowarding to ${target.host}:${target.port}`);
+      
       checkServiceHealth({
         host: target.host,
         port: target.port,
         path: '/api/status'
-      }).then(() => {
-        proxyTarget();
-      }, (err) => {
+      }).then(() => bindAppLvlFn.reduce((promise, appLvlFn) => {
+        if (!promise) {
+          return appLvlFn(req, res);
+        } else {
+          promise.then(() => appLvlFn(req, res))
+        }
+      }, null)).then(() => proxyTarget()).catch(err => {
         sendError(res, `Cannot check health for service on ${target.host}:${target.port}. Error: ${err.message}`);
       });
     } catch (ex) {
@@ -106,6 +112,23 @@
       }
     });
   });
+
+  server.use = function (proxyFn) {
+    console.log(typeof proxyFn === 'function', 'Proxy middleware must be a function.');
+    if (typeof proxyFn === 'function') {
+      bindAppLvlFn.push(function (req, res) {
+        return new Promise((resolve, reject) => {
+          proxyFn(req, res, function (err) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
+        });
+      });
+    }
+  };
 
   server.run = function (port, useDefScktList = false) {
     useDefaultList = useDefScktList;

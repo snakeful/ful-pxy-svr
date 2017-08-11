@@ -1,4 +1,8 @@
 const { server } = require('./index.js');
 console.log('Running from testing');
 server.runDiscoveryServer = true;
-server.run(process.argv[2], true, true);
+server.use(function (req, res, next) {
+  console.log('I\'m a middleware function');
+  next();
+});
+server.run(process.argv[2], true);

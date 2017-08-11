@@ -8,8 +8,9 @@ npm install ful-pxy-svr --save
 ```
 
 # Features
-* Proxy urls through this server.
-* Discovery service to register services with a host and port.
+* Proxy requests through this server.
+* Discovery service to register a host with port.
+* Middleware functions to add functionality before making proxy request to target socket.
 
 # Quick start
 ```
@@ -18,6 +19,10 @@ proxy.dirname = <path of the directory to save sockets address book>;
 server.runDiscoveryServer = true; // Run the discovery microservice
 /* Default port: 80 or port in process.env.port */
 /* Default list false, will use default socket list with true value */
+server.use(function (req, res, next) {
+  console.log('I\'m a middleware function');
+  next();
+});
 server.run(3000, true, true);
 ```
 
@@ -50,6 +55,12 @@ if (cluster.isMaster) {
   process.on('message', function (msg) {
     msg.cmd && msg.cmd === 'read-sockets' && server.readSockets();
   });
+  server.use(function (req, res, next) {
+    console.log(`I\'m a middleware function from worker ${process.pid}`);
+    next();
+  });
   server.run(port, true);
 }
 ```
+
+# 
