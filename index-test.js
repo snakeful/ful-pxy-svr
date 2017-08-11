@@ -1,5 +1,4 @@
-const proxyServer = require('./index.js');
+const { server } = require('./index.js');
 console.log('Running from testing');
-console.log(proxyServer.app.ipAddress4);
-console.log(proxyServer.app.ipAddress6);
-proxyServer.runServer(90, true, true);
+server.runDiscoveryServer = true;
+server.run(process.argv[2], true, true);
