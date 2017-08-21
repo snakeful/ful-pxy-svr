@@ -24,10 +24,10 @@ if (cluster.isMaster) {
 } else {
   const { server } =  require('./index');
   console.log(`Running worker ${process.pid} from testing`);
-  process.on('message', function (msg) {
+  process.on('message', msg => {
     msg.cmd && msg.cmd === 'read-sockets' && server.readSockets();
   });
-  server.use(function (req, res, next) {
+  server.use((req, res, next) => {
     console.log(`I\'m a middleware function from worker ${process.pid}`);
     next();
   });

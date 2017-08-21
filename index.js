@@ -15,10 +15,10 @@
   };
 
   function checkServiceHealth(options) {
-    let http = require('http');
+    const http = require('http');
     return new Promise((resolve, reject) => {
-      let req = http.request(options, (res) => {
-        res.on('data', (data) => {
+      const req = http.request(options, (res) => {
+        res.on('data', data => {
           console.log(`Data: ${data}`);
         });
 
@@ -30,7 +30,7 @@
           resolve();
         });
       });
-      req.on('error', (error) => {
+      req.on('error', error => {
         reject({
           message: error
         });
@@ -39,20 +39,20 @@
     });
   };
 
-  let proxy = proxyServer.createProxyServer({});
-  let bindAppLvlFn = [];
+  const proxy = proxyServer.createProxyServer({});
+  const bindAppLvlFn = [];
   const server = http.createServer(function (req, res) {
     try {
       if (['OPTIONS', 'HEAD'].indexOf(req.method) !== -1) {
-        let headers = {};
-        headers['access-control-allow-origin'] = '*';
-        headers['access-control-allow-headers'] = 'Content-Type, Content-Length, Authorization, Accept, X-Request-With, x-socket-id';
-        headers['access-control-allow-methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
-        res.writeHeader(200, headers);
+        res.writeHeader(200, {
+          'access-control-allow-origin': '*',
+          'access-control-allow-headers': 'Content-Type, Content-Length, Authorization, Accept, X-Request-With, x-socket-id',
+          'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS'
+        });
         return res.end();
       }
 
-      let sockets = this.socketList[req.headers['x-socket-id'] || 'default'];
+      const sockets = this.socketList[req.headers['x-socket-id'] || 'default'];
       if (!sockets && (useDefaultList === 'true')) {
         sockets = this.socketList['default'];
       }
@@ -76,13 +76,12 @@
       function proxyTarget () {
         proxy.web(req, res, {
           target: target
-        }, (err) => {
+        }, err => {
           console.log(`Error: ${JSON.stringify(err, null, ' ')}`);
           sendError(res, err);
         });
       }
       console.log(`${address[address.length - 1]}:${req.socket.remotePort} fowarding to ${target.host}:${target.port}`);
-      
       checkServiceHealth({
         host: target.host,
         port: target.port,
@@ -100,10 +99,9 @@
       sendError(res, ex.message);
     }
   });
-
   // Get the ipv4 address from which the server is running
-  Object.keys(ifaces).forEach((ifname) => {
-    ifaces[ifname].forEach((iface) => {
+  Object.keys(ifaces).forEach(ifname => {
+    ifaces[ifname].forEach(iface => {
       if (!server.ipAddress4 && iface.family === 'IPv4' && iface.internal) {
         server.ipAddress4 = iface.address;
       }
@@ -112,13 +110,12 @@
       }
     });
   });
-
   server.use = function (proxyFn) {
-    console.log(typeof proxyFn === 'function', 'Proxy middleware must be a function.');
+    console.assert(typeof proxyFn === 'function', 'Proxy middleware must be a function.');
     if (typeof proxyFn === 'function') {
       bindAppLvlFn.push(function (req, res) {
         return new Promise((resolve, reject) => {
-          proxyFn(req, res, function (err) {
+          proxyFn(req, res, err => {
             if (err) {
               reject(err);
             } else {
@@ -129,7 +126,6 @@
       });
     }
   };
-
   server.run = function (port, useDefScktList = false) {
     useDefaultList = useDefScktList;
     this.port = parseInt(port || process.env.port || 80);

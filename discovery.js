@@ -94,7 +94,7 @@
       server.socketList[req.headers['x-socket-id'] || 'default'] = sockets;
     }
     let exist = false;
-    sockets.sockets.forEach((socket) => {
+    sockets.sockets.forEach(socket => {
       if ((socket.host === req.body.host) && (socket.port === parseInt(req.body.port))) {
         exist = true;
       }
