@@ -1,6 +1,6 @@
 {
   "name": "ful-pxy-svr",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Ful Proxy Server",
   "main": "index.js",
   "scripts": {

@@ -7,7 +7,7 @@
   let useDefaultList = false;
   let socketList;
   function sendError(res, err) {
-    res.writeHeader(500);
+    res.writeHeader(err instanceof Object ? err.status || 500 : 500);
     res.write(JSON.stringify({
       err: err
     }));
