@@ -87,11 +87,7 @@
         port: target.port,
         path: '/api/status'
       }).then(() => bindAppLvlFn.reduce((promise, appLvlFn) => {
-        if (!promise) {
-          return appLvlFn(req, res);
-        } else {
-          promise.then(() => appLvlFn(req, res))
-        }
+        return !promise ? appLvlFn(req, res) : promise.then(() => appLvlFn(req, res));
       }, null)).then(() => proxyTarget(), err => {
         sendError(res, err);
       }).catch(err => {
