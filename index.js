@@ -9,7 +9,7 @@
   function sendError(res, err) {
     res.writeHeader(500);
     res.write(JSON.stringify({
-      error: err
+      err: err
     }));
     res.end();
   };
@@ -92,7 +92,9 @@
         } else {
           promise.then(() => appLvlFn(req, res))
         }
-      }, null)).then(() => proxyTarget()).catch(err => {
+      }, null)).then(() => proxyTarget(), err => {
+        sendError(res, err);
+      }).catch(err => {
         sendError(res, `Cannot check health for service on ${target.host}:${target.port}. Error: ${err.message}`);
       });
     } catch (ex) {
