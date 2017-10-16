@@ -1,6 +1,6 @@
 {
   "name": "ful-pxy-svr",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Ful Proxy Server",
   "main": "index.js",
   "scripts": {
@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/snakeful/ful-pxy-svr#readme",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "compression": "^1.7.0",
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
     "cors": "^2.8.4",
-    "express": "^4.15.4",
-    "helmet": "^3.8.1",
+    "express": "^4.16.2",
+    "helmet": "^3.9.0",
     "http-proxy": "^1.16.2"
   }
 }
